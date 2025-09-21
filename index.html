@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Chess</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-feather="chess" class="text-emerald-400"></i>
+                <h1 class="text-xl font-bold">Fake Chess </h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-emerald-400 transition">Home</a>
+                <a href="#" class="hover:text-emerald-400 transition">Players</a>
+                <a href="#" class="hover:text-emerald-400 transition">Games</a>
+                <a href="#" id="loginBtn" class="hover:text-emerald-400 transition">Login</a>
+                <span id="userGreeting" class="hidden items-center space-x-2">
+                    <span>Hello, <span id="usernameDisplay"></span></span>
+                    <button id="logoutBtn" class="text-sm bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Logout</button>
+                </span>
+            </nav>
+            <button id="mobileMenuBtn" class="md:hidden">
+                <i data-feather="menu"></i>
+            </button>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-800 pb-4 px-4">
+            <div class="flex flex-col space-y-2">
+                <a href="#" class="py-2 hover:text-emerald-400 transition">Home</a>
+                <a href="#" class="py-2 hover:text-emerald-400 transition">Players</a>
+                <a href="#" class="py-2 hover:text-emerald-400 transition">Games</a>
+                <a href="#" id="mobileLoginBtn" class="py-2 hover:text-emerald-400 transition">Login</a>
+                <div id="mobileUserGreeting" class="hidden pt-2 border-t border-slate-700">
+                    <div class="flex justify-between items-center">
+                        <span>Hello, <span id="mobileUsernameDisplay"></span></span>
+                        <button id="mobileLogoutBtn" class="text-sm bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-4 md:py-8 chess-board-bg">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
+            <!-- Left Column -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Search Form -->
+                <div class="bg-slate-800 rounded-lg shadow-lg p-4 md:p-6">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        <i data-feather="search" class="mr-2"></i> Player Search
+                    </h2>
+                    <div class="flex">
+                        <input
+                            id="inputusername"
+                            type="text" 
+                            id="usernameInput" 
+                            placeholder="Enter chess.com username" 
+                            class="flex-grow bg-slate-700 border border-slate-600 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                         >
+                        </input>
+                        <button 
+                            id="searchBtn" 
+                            class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-r-lg transition"
+                        >
+                            Search
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profileSection" class="bg-slate-800 rounded-lg shadow-lg p-4 md:p-6 hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-xl font-semibold flex items-center">
+                            <i data-feather="user" class="mr-2"></i> Player Profile
+                        </h2>
+                        <button id="addToFavoritesBtn" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded flex items-center">
+                            <i data-feather="star" class="mr-1 w-4 h-4"></i> Add to Favorites
+                        </button>
+                    </div>
+                    <div id="profileContent" class="space-y-4">
+                        <!-- Profile content will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Favorites Section -->
+                <div id="favoritesSection" class="bg-slate-800 rounded-lg shadow-lg p-4 md:p-6">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        <i data-feather="star" class="mr-2"></i> Favorites
+                    </h2>
+                    <div id="favoritesList" class="space-y-3">
+                        <p id="noFavoritesMessage" class="text-slate-400">No favorites added yet. Search for players to add them here.</p>
+                        <!-- Favorites will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="lg:col-span-2">
+                <!-- Recent Games Section -->
+                <div class="bg-slate-800 rounded-lg shadow-lg p-4 md:p-6">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        <i data-feather="clock" class="mr-2"></i> Recent Games
+                    </h2>
+                    <div id="gamesLoading" class="hidden flex justify-center py-8">
+                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+                    </div>
+                    <div id="noGamesMessage" class="hidden text-center py-8 text-slate-400">
+                        No games found. Search for a player to see their recent games.
+                    </div>
+                    <div id="gamesList" class="space-y-3">
+                        <!-- Games will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6">
+        <div class="container mx-auto px-4 text-center text-sm md:text-base">
+            <p>Chess Dashboard &copy; 2025 - A project using Chess.com API</p>
+            <p class="text-sm mt-1">Created with <i data-feather="heart" class="inline w-4 h-4 text-red-400"></i> for chess enthusiasts</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-lg p-4 md:p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">Login / Register</h3>
+                <button id="closeModalBtn" class="text-slate-400 hover:text-white">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="modalUsername" class="block text-sm mb-1">Username</label>
+                    <input type="text" id="modalUsername" class="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label for="modalPassword" class="block text-sm mb-1">Password</label>
+                    <input type="password" id="modalPassword" class="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="flex justify-between pt-2">
+                    <button id="loginSubmitBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded transition">Login</button>
+                    <button id="registerBtn" class="text-slate-400 hover:text-white text-sm">Need an account? Register</button>
+                </div>
+                <div id="modalMessage" class="text-sm text-red-400 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-lg p-4 md:p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">Register</h3>
+                <button id="closeRegisterModalBtn" class="text-slate-400 hover:text-white">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="registerUsername" class="block text-sm mb-1">Username</label>
+                    <input type="text" id="registerUsername" class="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label for="registerPassword" class="block text-sm mb-1">Password</label>
+                    <input type="password" id="registerPassword" class="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label for="registerConfirmPassword" class="block text-sm mb-1">Confirm Password</label>
+                    <input type="password" id="registerConfirmPassword" class="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="flex justify-between pt-2">
+                    <button id="registerSubmitBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded transition">Register</button>
+                    <button id="backToLoginBtn" class="text-slate-400 hover:text-white text-sm">Back to Login</button>
+                </div>
+                <div id="registerMessage" class="text-sm text-red-400 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <button id="chatbotToggleBtn" class="chatbot-toggle bg-emerald-600 hover:bg-emerald-700 text-white rounded-full p-4 shadow-lg transition">
+        <i data-feather="message-square"></i>
+    </button>
+
+    <div id="chatbotContainer" class="chatbot-container hidden bg-slate-800 rounded-lg shadow-xl overflow-hidden">
+        <div class="bg-slate-900 px-4 py-3 flex justify-between items-center">
+            <h3 class="font-semibold">Chess Assistant</h3>
+            <button id="minimizeChatbotBtn" class="text-slate-400 hover:text-white">
+                <i data-feather="minus"></i>
+            </button>
+        </div>
+        <div id="chatbotMessages" class="p-4 h-48 md:h-64 overflow-y-auto bg-slate-700">
+            <div class="text-sm mb-2">
+                <div class="bg-slate-600 rounded-lg p-3 inline-block max-w-xs">
+                    Hello! I'm your chess assistant. Ask me about player ratings, training tips, or top players.
+                </div>
+            </div>
+        </div>
+        <div class="p-3 bg-slate-800 border-t border-slate-700">
+            <div class="flex">
+                <input 
+                    type="text" 
+                    id="chatbotInput" 
+                    placeholder="Ask me something..." 
+                    class="flex-grow bg-slate-700 border border-slate-600 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                <button 
+                    id="chatbotSendBtn" 
+                    class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-r-lg transition"
+                >
+                    <i data-feather="send" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+      <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</body>
+</html>
